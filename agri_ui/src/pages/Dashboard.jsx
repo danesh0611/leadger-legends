@@ -24,6 +24,7 @@ export default function Dashboard() {
 	const [transporterForm, setTransporterForm] = useState({
 		batchId: '',
 		distributorName: '',
+		cropName: '',
 		quantityReceived: '',
 		purchasePrice: '',
 		transportDetails: '',
@@ -34,6 +35,8 @@ export default function Dashboard() {
 	const [retailerForm, setRetailerForm] = useState({
 		batchId: '',
 		retailerName: '',
+		distributorName: '',
+		cropName: '',
 		shopLocation: '',
 		retailQuantity: '',
 		retailPurchasePrice: '',
@@ -95,26 +98,29 @@ export default function Dashboard() {
 				...record,
 				batchId: transporterForm.batchId,
 				distributorName: transporterForm.distributorName,
+				cropName: transporterForm.cropName,
 				quantityReceived: Number(transporterForm.quantityReceived || 0),
 				purchasePrice: Number(transporterForm.purchasePrice || 0),
 				transportDetails: transporterForm.transportDetails,
 				warehouseLocation: transporterForm.warehouseLocation,
 				handoverDate: transporterForm.handoverDate
 			}
-			setTransporterForm({ batchId: '', distributorName: '', quantityReceived: '', purchasePrice: '', transportDetails: '', warehouseLocation: '', handoverDate: '' })
+			setTransporterForm({ batchId: '', distributorName: '', cropName: '', quantityReceived: '', purchasePrice: '', transportDetails: '', warehouseLocation: '', handoverDate: '' })
 		}
 		if (role === 'retailer') {
 			record = {
 				...record,
 				batchId: retailerForm.batchId,
 				retailerName: retailerForm.retailerName,
+				distributorName: retailerForm.distributorName,
+				cropName: retailerForm.cropName,
 				shopLocation: retailerForm.shopLocation,
 				retailQuantity: Number(retailerForm.retailQuantity || 0),
 				retailPurchasePrice: Number(retailerForm.retailPurchasePrice || 0),
 				consumerPrice: Number(retailerForm.consumerPrice || 0),
 				expiryDate: retailerForm.expiryDate
 			}
-			setRetailerForm({ batchId: '', retailerName: '', shopLocation: '', retailQuantity: '', retailPurchasePrice: '', consumerPrice: '', expiryDate: '' })
+			setRetailerForm({ batchId: '', retailerName: '', distributorName: '', cropName: '', shopLocation: '', retailQuantity: '', retailPurchasePrice: '', consumerPrice: '', expiryDate: '' })
 		}
 
 		const next = [record, ...entries]
@@ -222,6 +228,10 @@ export default function Dashboard() {
 									<input className="rounded-md border border-slate-300 px-3 py-2" value={transporterForm.distributorName} onChange={e=>setTransporterForm(v=>({...v, distributorName:e.target.value}))} required />
 								</label>
 								<label className="flex flex-col text-sm">
+									<span className="mb-1 text-slate-700">Crop Name</span>
+									<input className="rounded-md border border-slate-300 px-3 py-2" value={transporterForm.cropName} onChange={e=>setTransporterForm(v=>({...v, cropName:e.target.value}))} required />
+								</label>
+								<label className="flex flex-col text-sm">
 									<span className="mb-1 text-slate-700">Quantity Received</span>
 									<input type="number" min="0" step="0.01" className="rounded-md border border-slate-300 px-3 py-2" value={transporterForm.quantityReceived} onChange={e=>setTransporterForm(v=>({...v, quantityReceived:e.target.value}))} required />
 								</label>
@@ -253,6 +263,14 @@ export default function Dashboard() {
 								<label className="flex flex-col text-sm">
 									<span className="mb-1 text-slate-700">Retailer Name</span>
 									<input className="rounded-md border border-slate-300 px-3 py-2" value={retailerForm.retailerName} onChange={e=>setRetailerForm(v=>({...v, retailerName:e.target.value}))} required />
+								</label>
+								<label className="flex flex-col text-sm">
+									<span className="mb-1 text-slate-700">Distributor Name</span>
+									<input className="rounded-md border border-slate-300 px-3 py-2" value={retailerForm.distributorName} onChange={e=>setRetailerForm(v=>({...v, distributorName:e.target.value}))} required />
+								</label>
+								<label className="flex flex-col text-sm">
+									<span className="mb-1 text-slate-700">Crop Name</span>
+									<input className="rounded-md border border-slate-300 px-3 py-2" value={retailerForm.cropName} onChange={e=>setRetailerForm(v=>({...v, cropName:e.target.value}))} required />
 								</label>
 								<label className="flex flex-col text-sm">
 									<span className="mb-1 text-slate-700">Shop Location</span>
@@ -305,6 +323,7 @@ export default function Dashboard() {
 										{role === 'transporter' && (<>
 											<th className="px-3 py-2">Batch</th>
 											<th className="px-3 py-2">Distributor</th>
+											<th className="px-3 py-2">Crop Name</th>
 											<th className="px-3 py-2">Qty Received</th>
 											<th className="px-3 py-2">Purchase Price</th>
 											<th className="px-3 py-2">Warehouse</th>
@@ -313,6 +332,8 @@ export default function Dashboard() {
 										{role === 'retailer' && (<>
 											<th className="px-3 py-2">Batch</th>
 											<th className="px-3 py-2">Retailer</th>
+											<th className="px-3 py-2">Distributor</th>
+											<th className="px-3 py-2">Crop Name</th>
 											<th className="px-3 py-2">Shop</th>
 											<th className="px-3 py-2">Qty</th>
 											<th className="px-3 py-2">Retail Buy</th>
@@ -334,6 +355,7 @@ export default function Dashboard() {
 											{role === 'transporter' && (<>
 												<td className="px-3 py-2">{row.batchId}</td>
 												<td className="px-3 py-2">{row.distributorName}</td>
+												<td className="px-3 py-2">{row.cropName}</td>
 												<td className="px-3 py-2">{row.quantityReceived}</td>
 												<td className="px-3 py-2">{row.purchasePrice}</td>
 												<td className="px-3 py-2">{row.warehouseLocation}</td>
@@ -342,6 +364,8 @@ export default function Dashboard() {
 											{role === 'retailer' && (<>
 												<td className="px-3 py-2">{row.batchId}</td>
 												<td className="px-3 py-2">{row.retailerName}</td>
+												<td className="px-3 py-2">{row.distributorName}</td>
+												<td className="px-3 py-2">{row.cropName}</td>
 												<td className="px-3 py-2">{row.shopLocation}</td>
 												<td className="px-3 py-2">{row.retailQuantity}</td>
 												<td className="px-3 py-2">{row.retailPurchasePrice}</td>
