@@ -1,19 +1,17 @@
 // SPDX-License-Identifier: MIT
-pragma solidity 0.8.20;
+pragma solidity ^0.8.20;
 
 /// @title Blockchain Supply Chain Tracker (quantity & price checks)
-/// @author Chakradhar
-/// @notice Tracks agricultural produce from farmers to consumers with immutable records and strict quantity/price checks
-
+/// @author …
 contract SupplyChainTracker {
     enum Stage { Created, Distributed, Retail }
 
     struct FarmerInfo {
         string farmerName;
         string cropName;
-        uint256 quantity;           // original total kgs
-        uint256 remainingQuantity;  // remaining kgs available to sell
-        uint256 pricePerKg;        // price per kg (in wei units)
+        uint256 quantity;
+        uint256 remainingQuantity;
+        uint256 pricePerKg;
         string location;
         uint256 createdDate;
         address farmer;
@@ -21,9 +19,9 @@ contract SupplyChainTracker {
 
     struct DistributorInfo {
         string distributorName;
-        uint256 quantityReceived;     // how many kgs received from farmer
-        uint256 remainingQuantity;    // remaining kgs this distributor still has to sell
-        uint256 purchasePrice;        // total price paid to farmer for quantityReceived (in wei)
+        uint256 quantityReceived;
+        uint256 remainingQuantity;
+        uint256 totalAmountPaid;
         string transportDetails;
         string warehouseLocation;
         uint256 handoverDate;
@@ -34,25 +32,25 @@ contract SupplyChainTracker {
     struct RetailInfo {
         string retailerName;
         string shopLocation;
-        uint256 retailQuantity;        // kgs bought from a distributor
-        uint256 retailPurchasePrice;   // total price paid to distributor for retailQuantity (in wei)
-        uint256 consumerPrice;         // consumer price per kg (in wei)
-        uint256 expiryDate;            // optional
+        uint256 retailQuantity;
+        uint256 retailPurchasePrice;
+        uint256 consumerPrice;
+        uint256 expiryDate;
         uint256 timestamp;
         address retailer;
-        string distributorName;        // name of distributor from which this retailer bought
+        string distributorName;  
     }
 
     struct Produce {
         FarmerInfo farmerInfo;
         DistributorInfo[] distributors;
-        RetailInfo[] retailers;
+        mapping(address => RetailInfo[]) distributorRetailers; // ✅ retailers grouped under distributor
         Stage stage;
     }
 
     mapping(bytes32 => Produce) public produceItems;
     mapping(address => bytes32[]) public farmerBatches;
-    uint256 public batchNonce; // buffer to avoid collisions
+    uint256 public batchNonce;
 
     // Events
     event ProduceCreated(bytes32 indexed batchId, address indexed farmer);
@@ -60,7 +58,6 @@ contract SupplyChainTracker {
     event RetailUpdated(bytes32 indexed batchId, address indexed retailer, uint256 qty, uint256 price);
 
     // -------------------- Farmer --------------------
-    /// @notice Create a new produce batch. remainingQuantity initialized = quantity.
     function createProduce(
         string memory farmerName,
         string memory cropName,
@@ -69,6 +66,8 @@ contract SupplyChainTracker {
         string memory location
     ) public returns (bytes32) {
         require(quantity > 0, "Quantity must be > 0");
+        require(pricePerKg > 0, "Price must be > 0");
+
         bytes32 batchId = keccak256(
             abi.encode(msg.sender, cropName, block.timestamp, batchNonce)
         );
@@ -78,7 +77,7 @@ contract SupplyChainTracker {
             farmerName,
             cropName,
             quantity,
-            quantity,       // remainingQuantity = full quantity initially
+            quantity,
             pricePerKg,
             location,
             block.timestamp,
@@ -96,52 +95,34 @@ contract SupplyChainTracker {
     }
 
     // -------------------- Distributor --------------------
-    /**
-     * @notice Distributor claims part (or whole) of a batch.
-     * @param batchId The batch being claimed.
-     * @param cropName The cropName to verify against batch (prevents attaching to wrong batch).
-     * @param distributorName Name of distributor.
-     * @param quantityReceived Quantity distributor is receiving (kgs).
-     * @param purchasePrice Total price paid to farmer for this quantityReceived (wei).
-     * @param transportDetails transport metadata.
-     * @param warehouseLocation warehouse metadata.
-     * @param handoverDate off-chain handover date (optional semantics).
-     */
     function addDistributor(
         bytes32 batchId,
         string memory cropName,
         string memory distributorName,
         uint256 quantityReceived,
-        uint256 purchasePrice,
+        uint256 offeredPricePerKg,
         string memory transportDetails,
         string memory warehouseLocation,
         uint256 handoverDate
     ) public {
+        require(offeredPricePerKg > 0, "Price per kg must be > 0");
         Produce storage p = produceItems[batchId];
         require(p.farmerInfo.farmer != address(0), "Batch does not exist");
         require(quantityReceived > 0, "Quantity must be > 0");
-        // verify crop name matches
         require(
             keccak256(bytes(p.farmerInfo.cropName)) == keccak256(bytes(cropName)),
             "Crop name mismatch"
         );
-        // ensure enough remaining quantity at farmer
         require(quantityReceived <= p.farmerInfo.remainingQuantity, "Not enough farmer quantity");
+        require(offeredPricePerKg == p.farmerInfo.pricePerKg, "Price mismatch");
 
-        // price check:
-        // require pur chasePrice == quantityReceived * farmer.pricePerKg
-        // to avoid integer division issues use cross-multiplication
-        require(
-            purchasePrice * 1 == p.farmerInfo.pricePerKg,
-            "Purchase price mismatch with farmer price"
-        );
+        uint256 totalAmountPaid = quantityReceived * offeredPricePerKg;
 
-        // create distributor record
         DistributorInfo memory d = DistributorInfo(
             distributorName,
             quantityReceived,
-            quantityReceived,  // remainingQuantity initialized
-            purchasePrice,
+            quantityReceived,
+            totalAmountPaid,
             transportDetails,
             warehouseLocation,
             handoverDate,
@@ -149,29 +130,14 @@ contract SupplyChainTracker {
             msg.sender
         );
 
-        // update farmer remaining quantity
         p.farmerInfo.remainingQuantity -= quantityReceived;
-
         p.distributors.push(d);
-        // once at least one distributor exists, mark stage distributed
         p.stage = Stage.Distributed;
 
-        emit Distributed(batchId, msg.sender, quantityReceived, purchasePrice);
+        emit Distributed(batchId, msg.sender, quantityReceived, totalAmountPaid);
     }
 
     // -------------------- Retailer --------------------
-    /**
-     * @notice Retailer buys from a specific distributor entry within a batch.
-     * @param batchId The batch being purchased from.
-     * @param cropName Must match batch's cropName.
-     * @param distributorName Name of the distributor in produceItems[batchId].distributors array.
-     * @param retailerName Retailer name.
-     * @param shopLocation Retailer shop location.
-     * @param retailQuantity Quantity retailer buys from that distributor.
-     * @param retailPurchasePrice Total price paid to distributor for retailQuantity.
-     * @param consumerPrice Consumer price per kg set by retailer (optional).
-     * @param expiryDate Optional expiry timestamp.
-     */
     function addRetailer(
         bytes32 batchId,
         string memory cropName,
@@ -186,13 +152,14 @@ contract SupplyChainTracker {
         Produce storage p = produceItems[batchId];
         require(p.farmerInfo.farmer != address(0), "Batch does not exist");
         require(retailQuantity > 0, "Quantity must be > 0");
-        // verify crop name matches
+        require(retailPurchasePrice > 0 && consumerPrice > 0, "Invalid pricing");
+
         require(
             keccak256(bytes(p.farmerInfo.cropName)) == keccak256(bytes(cropName)),
             "Crop name mismatch"
         );
 
-        // Find distributor index by name
+        // find distributor
         uint256 distributorIndex = type(uint256).max;
         for (uint256 i = 0; i < p.distributors.length; i++) {
             if (keccak256(bytes(p.distributors[i].distributorName)) == keccak256(bytes(distributorName))) {
@@ -203,18 +170,12 @@ contract SupplyChainTracker {
         require(distributorIndex != type(uint256).max, "Distributor not found");
 
         DistributorInfo storage d = p.distributors[distributorIndex];
-
-        // ensure enough remaining quantity at distributor
         require(retailQuantity <= d.remainingQuantity, "Not enough distributor quantity");
+        require(
+            d.totalAmountPaid * retailQuantity == retailPurchasePrice * d.quantityReceived,
+            "Price inconsistent"
+        );
 
-        // Price consistency:
-        // Ensure retailer paid the same per-unit price as distributor's per-unit price.
-        // Use cross-multiplication to avoid division rounding:
-        // distributor.purchasePrice / distributor.quantityReceived == retailPurchasePrice / retailQuantity
-        // => distributor.purchasePrice * retailQuantity == retailPurchasePrice * distributor.quantityReceived
-        
-
-        // create retail record
         RetailInfo memory r = RetailInfo(
             retailerName,
             shopLocation,
@@ -227,33 +188,38 @@ contract SupplyChainTracker {
             distributorName
         );
 
-        // update distributor remaining quantity
         d.remainingQuantity -= retailQuantity;
-
-        p.retailers.push(r);
+        p.distributorRetailers[d.distributor].push(r);
         p.stage = Stage.Retail;
 
         emit RetailUpdated(batchId, msg.sender, retailQuantity, retailPurchasePrice);
     }
 
     // -------------------- Getters --------------------
-    function getProduce(bytes32 batchId) public view returns (Produce memory) {
-        return produceItems[batchId];
+    function getProduce(bytes32 batchId) public view returns (FarmerInfo memory, DistributorInfo[] memory, Stage) {
+        Produce storage p = produceItems[batchId];
+        return (p.farmerInfo, p.distributors, p.stage);
     }
 
     function getFarmerBatches(address farmer) public view returns (bytes32[] memory) {
         return farmerBatches[farmer];
     }
 
-    /// @notice returns remaining available quantity for farmer for a batch
     function getFarmerRemainingQuantity(bytes32 batchId) public view returns (uint256) {
         return produceItems[batchId].farmerInfo.remainingQuantity;
     }
 
-    /// @notice returns distributor remaining quantity for a given batch and distributor index
     function getDistributorRemainingQuantity(bytes32 batchId, uint256 distributorIndex) public view returns (uint256) {
-        require(produceItems[batchId].farmerInfo.farmer != address(0), "Batch does not exist");
         require(produceItems[batchId].distributors.length > distributorIndex, "Invalid distributor index");
         return produceItems[batchId].distributors[distributorIndex].remainingQuantity;
+    }
+
+    // ✅ new getter: retailers grouped by distributor
+    function getRetailersForDistributor(bytes32 batchId, address distributor)
+        public
+        view
+        returns (RetailInfo[] memory)
+    {
+        return produceItems[batchId].distributorRetailers[distributor];
     }
 }
