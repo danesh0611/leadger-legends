@@ -1,0 +1,101 @@
+{
+  "welcome": "AgriTrace-க்கு வரவேற்கிறோம்",
+  "home": "முகப்பு",
+  "login": "உள்நுழைவு",
+  "signup": "பதிவு செய்க",
+  "qrGenerator": "QR ஜெனரேட்டர்",
+  "footer": {
+    "copyright": "அனைத்து உரிமைகளும் பாதுகாக்கப்பட்டவை.",
+    "privacy": "தனியுரிமை",
+    "terms": "விதிமுறைகள்"
+  },
+  "language": {
+    "english": "English",
+    "tamil": "தமிழ்"
+  },
+  "content": {
+    "title": "விவசாய கண்காணிப்பு அமைப்பு",
+    "description": "விவசாய பொருட்களை பண்ணையில் இருந்து மேசை வரை கண்காணித்து தடம் காண்க",
+    "features": {
+      "title": "முக்கிய அம்சங்கள்",
+      "feature1": "தயாரிப்பு கண்காணிப்பு",
+      "feature2": "தர உத்தரவாதம்",
+      "feature3": "விநியோக சங்கிலி வெளிப்படைத்தன்மை",
+      "feature4": "QR குறியீடு உருவாக்கம்"
+    }
+  },
+  "login": {
+    "title": "மீண்டும் வரவேற்கிறோம்",
+    "subtitle": "உங்கள் கணக்கில் உள்நுழையவும்",
+    "role": "பங்கு",
+    "username": "பயனர் பெயர்",
+    "email": "மின்னஞ்சல்",
+    "password": "கடவுச்சொல்",
+    "usernamePlaceholder": "உங்கள் பயனர் பெயரை உள்ளிடவும்",
+    "emailPlaceholder": "you@example.com",
+    "passwordPlaceholder": "••••••••",
+    "loginButton": "உள்நுழைவு",
+    "loggingIn": "உள்நுழைகிறது...",
+    "successMessage": "வெற்றிகரமாக உள்நுழைந்துள்ளீர்கள்! டாஷ்போர்டுக்கு திருப்பி விடப்படுகிறது...",
+    "loginFailed": "உள்நுழைவு தோல்வி",
+    "newUser": "புதிய பயனர்?",
+    "createAccount": "கணக்கு உருவாக்கவும்",
+    "selected": "தேர்ந்தெடுக்கப்பட்டது",
+    "roles": {
+      "farmer": "விவசாயி",
+      "transporter": "போக்குவரத்து",
+      "retailer": "சில்லறை விற்பனையாளர்"
+    }
+  },
+  "signup": {
+    "title": "உங்கள் கணக்கை உருவாக்கவும்",
+    "subtitle": "விவசாய கண்காணிப்பு நெட்வொர்க்கில் சேரவும்",
+    "name": "முழு பெயர்",
+    "email": "மின்னஞ்சல்",
+    "password": "கடவுச்சொல்",
+    "confirmPassword": "கடவுச்சொல்லை உறுதிப்படுத்தவும்",
+    "role": "பங்கு",
+    "namePlaceholder": "உங்கள் முழு பெயரை உள்ளிடவும்",
+    "emailPlaceholder": "you@example.com",
+    "passwordPlaceholder": "••••••••",
+    "confirmPasswordPlaceholder": "••••••••",
+    "signupButton": "கணக்கு உருவாக்கவும்",
+    "creatingAccount": "கணக்கு உருவாக்குகிறது...",
+    "successMessage": "கணக்கு வெற்றிகரமாக உருவாக்கப்பட்டது! உள்நுழைவு பக்கத்திற்கு திருப்பி விடப்படுகிறது...",
+    "signupFailed": "பதிவு தோல்வி",
+    "existingUser": "ஏற்கனவே கணக்கு உள்ளதா?",
+    "login": "இங்கே உள்நுழையவும்",
+    "selected": "தேர்ந்தெடுக்கப்பட்டது",
+    "roles": {
+      "farmer": "விவசாயி",
+      "transporter": "போக்குவரத்து",
+      "retailer": "சில்லறை விற்பனையாளர்"
+    }
+  },
+  "dashboard": {
+    "title": "டாஷ்போர்டு",
+    "welcome": "வரவேற்கிறோம்",
+    "subtitle": "உங்கள் கணக்கில் வெற்றிகரமாக உள்நுழைந்துள்ளீர்கள்",
+    "userInfo": "பயனர் தகவல்",
+    "username": "பயனர் பெயர்",
+    "email": "மின்னஞ்சல்",
+    "logout": "வெளியேறு",
+    "generateQR": "QR குறியீடு உருவாக்கவும்",
+    "loading": "ஏற்றுகிறது..."
+  },
+  "qrGenerator": {
+    "title": "QR குறியீடு உருவாக்கி",
+    "subtitle": "உங்கள் விவசாய தயாரிப்புகளுக்கு QR குறியீடுகளை உருவாக்கவும்",
+    "productName": "தயாரிப்பு பெயர்",
+    "productNamePlaceholder": "தயாரிப்பு பெயரை உள்ளிடவும்",
+    "farmName": "பண்ணை பெயர்",
+    "farmNamePlaceholder": "பண்ணை பெயரை உள்ளிடவும்",
+    "harvestDate": "அறுவடை தேதி",
+    "location": "இடம்",
+    "locationPlaceholder": "இடத்தை உள்ளிடவும்",
+    "generateButton": "QR குறியீடு உருவாக்கவும்",
+    "generating": "உருவாக்குகிறது...",
+    "downloadButton": "QR குறியீடு பதிவிறக்கவும்",
+    "resetButton": "படிவத்தை மீட்டமைக்கவும்"
+  }
+}

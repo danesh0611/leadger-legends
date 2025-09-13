@@ -1,0 +1,101 @@
+{
+  "welcome": "Welcome to AgriTrace",
+  "home": "Home",
+  "login": "Login",
+  "signup": "Sign Up",
+  "qrGenerator": "QR Generator",
+  "footer": {
+    "copyright": "All rights reserved.",
+    "privacy": "Privacy",
+    "terms": "Terms"
+  },
+  "language": {
+    "english": "English",
+    "tamil": "தமிழ்"
+  },
+  "content": {
+    "title": "Agricultural Traceability System",
+    "description": "Track and trace agricultural products from farm to table",
+    "features": {
+      "title": "Key Features",
+      "feature1": "Product Tracking",
+      "feature2": "Quality Assurance",
+      "feature3": "Supply Chain Transparency",
+      "feature4": "QR Code Generation"
+    }
+  },
+  "login": {
+    "title": "Welcome back",
+    "subtitle": "Login to your account",
+    "role": "Role",
+    "username": "Username",
+    "email": "Email",
+    "password": "Password",
+    "usernamePlaceholder": "Enter your username",
+    "emailPlaceholder": "you@example.com",
+    "passwordPlaceholder": "••••••••",
+    "loginButton": "Login",
+    "loggingIn": "Logging in...",
+    "successMessage": "Logged in successfully! Redirecting to dashboard...",
+    "loginFailed": "Login failed",
+    "newUser": "New user?",
+    "createAccount": "Create an account",
+    "selected": "Selected",
+    "roles": {
+      "farmer": "Farmer",
+      "transporter": "Transporter",
+      "retailer": "Retailer"
+    }
+  },
+  "signup": {
+    "title": "Create your account",
+    "subtitle": "Join the agricultural traceability network",
+    "name": "Full Name",
+    "email": "Email",
+    "password": "Password",
+    "confirmPassword": "Confirm Password",
+    "role": "Role",
+    "namePlaceholder": "Enter your full name",
+    "emailPlaceholder": "you@example.com",
+    "passwordPlaceholder": "••••••••",
+    "confirmPasswordPlaceholder": "••••••••",
+    "signupButton": "Create Account",
+    "creatingAccount": "Creating account...",
+    "successMessage": "Account created successfully! Redirecting to login...",
+    "signupFailed": "Signup failed",
+    "existingUser": "Already have an account?",
+    "login": "Login here",
+    "selected": "Selected",
+    "roles": {
+      "farmer": "Farmer",
+      "transporter": "Transporter",
+      "retailer": "Retailer"
+    }
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "welcome": "Welcome",
+    "subtitle": "You are successfully logged in to your account",
+    "userInfo": "User Information",
+    "username": "Username",
+    "email": "Email",
+    "logout": "Logout",
+    "generateQR": "Generate QR Code",
+    "loading": "Loading..."
+  },
+  "qrGenerator": {
+    "title": "QR Code Generator",
+    "subtitle": "Generate QR codes for your agricultural products",
+    "productName": "Product Name",
+    "productNamePlaceholder": "Enter product name",
+    "farmName": "Farm Name",
+    "farmNamePlaceholder": "Enter farm name",
+    "harvestDate": "Harvest Date",
+    "location": "Location",
+    "locationPlaceholder": "Enter location",
+    "generateButton": "Generate QR Code",
+    "generating": "Generating...",
+    "downloadButton": "Download QR Code",
+    "resetButton": "Reset Form"
+  }
+}

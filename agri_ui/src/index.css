@@ -1,0 +1,11 @@
+/* Tailwind is delivered via CDN in index.html, so we don't need @tailwind directives here. */
+/* Base styles */
+html, body, #root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background-color: #f8fafc; /* tailwind slate-50 */
+  color: #0f172a; /* tailwind slate-900 */
+}
