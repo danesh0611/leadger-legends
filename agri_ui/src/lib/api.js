@@ -1,4 +1,5 @@
-export const BASE_URL = 'https://cac4e739342c458a9fdd.free.beeceptor.com/api/users/'
+// Use local backend for API calls
+export const BASE_URL = 'http://localhost:5000/api/'
 
 export async function getJson(path = '') {
 	const res = await fetch(BASE_URL + path, {

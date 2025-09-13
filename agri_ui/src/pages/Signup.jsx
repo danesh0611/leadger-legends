@@ -32,8 +32,9 @@ export default function Signup() {
 			setError('Passwords do not match')
 			return
 		}
-		const payload = { action: 'signup', role, name, email, password }
-		const res = await postJson(payload)
+	// Send signup data to backend
+	const payload = { username: name, email, password, role }
+	const res = await postJson(payload, 'signup')
 		setLoading(false)
 		if (res.ok) {
 			setMessage(t('signup.successMessage'))

@@ -29,8 +29,8 @@ export default function Login() {
 		setLoading(true)
 		setError(null)
 		setMessage(null)
-		const payload = { action: 'login', role, email, password }
-		const res = await postJson(payload)
+	const payload = { email, password, role }
+	const res = await postJson(payload, 'login')
 		setLoading(false)
 		if (res.ok) {
 			// Use the login function from context
